@@ -7,7 +7,7 @@
 
 **Desenvolvido por [Daniel Chipolesk](https://github.com/chipolesk)**  
 
-API REST para controle financeiro do departamento de jovens da **IP Coqueiros**, inspirada em funcionalidades de um banco digital.  
+API REST para controle financeiro de um departamento interno, inspirada em funcionalidades de um banco digital.  
 O projeto tem como foco o **aprendizado e prática com Java + Spring Boot + SQL Server**, servindo como base para estudos e evolução pessoal.  
 
 ---
