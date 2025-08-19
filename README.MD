@@ -1,8 +1,8 @@
 # Projeto de Tesouraria 
-## Desenvolvido por: Daniel Chipolesk
+## Em desenvolvimento por: Daniel Chipolesk
 ### Stack: Java, Spring, Sql Server
 
-Projeto onde consiste numa aplicação web sobre relatorio de tesouraria do departamento de adolescentes da IP Coqueiros;
+Projeto onde consiste numa aplicação web sobre relatorio de tesouraria do departamento de jovens da IP Coqueiros;
 Projeto inspirado em um Banco digital.
 
 Contendo:
