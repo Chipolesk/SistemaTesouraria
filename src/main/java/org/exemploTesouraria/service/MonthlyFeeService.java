@@ -30,7 +30,7 @@ public class MonthlyFeeService {
                 .anyMatch(mensalidade -> mensalidade.getMonth() == month);
 
         if (isExists){
-            throw new RuntimeException("Este usuario já pagou a mensalidade deste mês");
+        throw new RuntimeException("Este usuario já pagou a mensalidade deste mês");
         }
         MonthlyFee insertMonthlyFee = new MonthlyFee();
         insertMonthlyFee.setUsers(users);

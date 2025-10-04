@@ -6,38 +6,42 @@ import java.util.Date;
 
 @Entity
 @Table
-public class Cantinas {
+public class Canteen {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cantina", nullable = false)
+    @Column(name = "id_canteen", nullable = false)
     private Integer id;
 
-    @Column(name = "descript_cantina")
+    @Column(name = "descript_canteen")
     //descrição do que é a cantina juntamente com valor
     private String description;
 
-    @Column(name = "food_cantina")
-    //alimento da cantina
+    @Column(name = "food_canteen")
+    //alimento da canteen
     private String food;
 
-    @Column(name = "annotations_cantina")
-    //anotações, como alguma divida pendente
+    @Column(name = "annotations_canteen")
+    //anotações
     private String annotations;
 
+    @Column(name = "debtors_canteen")
+    //devedores das cantinas
+    private String nameDebtors;
+
     @Column(name = "valueSold")
-    //valor vendido na cantina
+    //valor vendido na canteen
     private double valueSold;
 
-    @Column(name = "expenses_cantina")
-    //gastos na cantina
+    @Column(name = "expenses_canteen")
+    //gastos na canteen
     private double expenses;
 
-    @Column(name = "profit_cantina")
-    //lucro obtido na cantina
+    @Column(name = "profit_canteen")
+    //lucro obtido na canteen
     private double profit;
 
-    @Column(name = "date_cantina", nullable = false)
-    //data da cantina
+    @Column(name = "date_canteen", nullable = false, unique = true)
+    //data da canteen
     private Date dateCant;
 
 
@@ -45,6 +49,14 @@ public class Cantinas {
         return id;
     }
 
+
+    public String getNameDebtors() {
+        return nameDebtors;
+    }
+
+    public void setNameDebtors(String nameDebtors) {
+        this.nameDebtors = nameDebtors;
+    }
 
     public String getDescription() {
         return description;
