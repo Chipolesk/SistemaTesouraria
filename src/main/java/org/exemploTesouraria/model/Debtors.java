@@ -11,6 +11,7 @@ public class Debtors {
     private Integer id;
 
     private String nameDebtors;
+
     private Double amount;
 
     @ManyToOne

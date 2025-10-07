@@ -11,7 +11,7 @@ import java.util.List;
 public interface DebtorRepository extends JpaRepository<Debtors, Integer> {
 
     List<Debtors> findAll();
-    List<Debtors> findByName(String name);
+    List<Debtors> findByNameDebtors(String nameDebtors);
     List<Debtors> findByCanteen(Canteen canteen);
 
 }

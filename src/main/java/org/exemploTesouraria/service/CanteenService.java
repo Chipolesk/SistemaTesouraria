@@ -60,7 +60,7 @@ public class CanteenService {
                 .orElseThrow(() -> ResourceNotFoundException.CanteenNotFound(dateCant));
     }
     public List<DebtorWithCanteenDTO> findDebtorsWithCanteenInfo(String nameDebtors){
-        List<Debtors> debtors = debtorRepository.findByName(nameDebtors);
+        List<Debtors> debtors = debtorRepository.findByNameDebtors(nameDebtors);
 
         if(debtors.isEmpty()){
             throw new ResourceNotFoundException("Nenhum devedor encontrado com este nome: " + nameDebtors);

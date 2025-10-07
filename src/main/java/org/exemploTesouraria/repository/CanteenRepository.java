@@ -14,9 +14,7 @@ import java.util.Optional;
 public interface CanteenRepository extends JpaRepository<Canteen, Integer> {
     @Override
     List<Canteen> findAll();
-    List<MonthEnum> findByMonth(MonthEnum month);
-    List<Users> findByUsers(Users users);
-    List<Canteen> findByNameDebtors(String nameDebtors);
+    // List<MonthEnum> findByMonth(MonthEnum month);  necessário ajustar isso ainda, pois será util.
     Optional<Canteen> findById(Integer id);
     Optional<Canteen> findByDateCant(Date dateCant);
 }
