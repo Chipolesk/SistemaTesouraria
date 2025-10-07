@@ -2,7 +2,9 @@ package org.exemploTesouraria.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table
@@ -24,10 +26,6 @@ public class Canteen {
     //anotações
     private String annotations;
 
-    @Column(name = "debtors_canteen")
-    //devedores das cantinas
-    private String nameDebtors;
-
     @Column(name = "valueSold")
     //valor vendido na canteen
     private double valueSold;
@@ -44,18 +42,21 @@ public class Canteen {
     //data da canteen
     private Date dateCant;
 
+    @OneToMany(mappedBy = "canteen",cascade = CascadeType.ALL)
+    private List<Debtors> debtors = new ArrayList<>();
+
 
     public Integer getId() {
         return id;
     }
 
 
-    public String getNameDebtors() {
-        return nameDebtors;
+    public List<Debtors> getDebtors() {
+        return debtors;
     }
 
-    public void setNameDebtors(String nameDebtors) {
-        this.nameDebtors = nameDebtors;
+    public void setDebtors(List<Debtors> debtors) {
+        this.debtors = debtors;
     }
 
     public String getDescription() {
