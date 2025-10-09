@@ -2,6 +2,7 @@ package org.exemploTesouraria.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +41,7 @@ public class Canteen {
 
     @Column(name = "date_canteen", nullable = false, unique = true)
     //data da canteen
-    private Date dateCant;
+    private LocalDate dateCant;
 
     @OneToMany(mappedBy = "canteen",cascade = CascadeType.ALL)
     private List<Debtors> debtors = new ArrayList<>();
@@ -107,11 +108,11 @@ public class Canteen {
         this.profit = profit;
     }
 
-    public Date getDateCant() {
+    public LocalDate getDateCant() {
         return dateCant;
     }
 
-    public void setDateCant(Date dateCant) {
+    public void setDateCant(LocalDate dateCant) {
         this.dateCant = dateCant;
     }
 }

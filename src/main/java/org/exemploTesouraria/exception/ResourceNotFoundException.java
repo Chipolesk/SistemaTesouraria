@@ -1,5 +1,6 @@
 package org.exemploTesouraria.exception;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class ResourceNotFoundException extends RuntimeException{
@@ -15,7 +16,7 @@ public class ResourceNotFoundException extends RuntimeException{
     public static ResourceNotFoundException monthlyFeeNotFound(String name, String month){
         return new ResourceNotFoundException("Mensalidade de: " + month + " - EM ABERTO - de: " + name);
     }
-    public static ResourceNotFoundException CanteenNotFound(Date dateCant){
+    public static ResourceNotFoundException CanteenNotFound(LocalDate dateCant){
         return new ResourceNotFoundException("Cantina não encontrada do dia: " + dateCant);
     }
 }

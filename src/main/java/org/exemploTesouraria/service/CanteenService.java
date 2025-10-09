@@ -1,5 +1,6 @@
 package org.exemploTesouraria.service;
 
+import org.exemploTesouraria.DTO.CanteenDTO;
 import org.exemploTesouraria.DTO.DebtorDTO;
 import org.exemploTesouraria.DTO.DebtorWithCanteenDTO;
 import org.exemploTesouraria.exception.DataConflictException;
@@ -8,9 +9,9 @@ import org.exemploTesouraria.model.Canteen;
 import org.exemploTesouraria.model.Debtors;
 import org.exemploTesouraria.repository.CanteenRepository;
 import org.exemploTesouraria.repository.DebtorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public class CanteenService {
         this.debtorRepository = debtorRepository;
     }
 
-    public Canteen createCanteen(String food, String description, double valueSold, Date dateCant, double expenses, String annotations, List<DebtorDTO> debtorDTO) {
+    public CanteenDTO createCanteen(String food, String description, double valueSold, LocalDate dateCant, double expenses, String annotations, List<DebtorDTO> debtorDTO) {
         Canteen insertCanteen = new Canteen();
         double profit = valueSold - expenses;
 
@@ -49,15 +50,29 @@ public class CanteenService {
             debtors.setAmount(dto.getAmount());
             insertCanteen.getDebtors().add(debtors);
         }
-        return canteenRepository.save(insertCanteen);
+        Canteen saved = canteenRepository.save(insertCanteen);
+        return new CanteenDTO(saved);
     }
-    public List<Canteen> findAllCanteens() {
-        return canteenRepository.findAll();
+    public List<CanteenDTO> findAllCanteens() {
+        return canteenRepository.findAll()
+                .stream()
+                .map(CanteenDTO::new)
+                .collect(Collectors.toList());
     }
-    public Canteen findByDateCant(Date dateCant) {
-
-        return canteenRepository.findByDateCant(dateCant)
+    public CanteenDTO findByDateCant(LocalDate dateCant) {
+        Canteen canteen = canteenRepository.findByDateCant(dateCant)
                 .orElseThrow(() -> ResourceNotFoundException.CanteenNotFound(dateCant));
+        return new CanteenDTO(canteen);
+    }
+    public List<CanteenDTO> findByMonth(int month){
+        int year = LocalDate.now().getYear(); //pego o ano atual do sistema
+        LocalDate start = LocalDate.of(year ,month,1); //crio a data de inicio do mes
+        LocalDate end = start.withDayOfMonth(start.lengthOfMonth()); //determina o ultimo dia do mes, com a funcao lengthOfMonth pegando a quantidade de dias do mes
+
+        return canteenRepository.findByDateCantBetween(start, end)
+                .stream()
+                .map(CanteenDTO::new)
+                .collect(Collectors.toList());
     }
     public List<DebtorWithCanteenDTO> findDebtorsWithCanteenInfo(String nameDebtors){
         List<Debtors> debtors = debtorRepository.findByNameDebtors(nameDebtors);
