@@ -16,6 +16,7 @@ public interface MonthlyFeeRepository extends JpaRepository<MonthlyFee, Integer>
     List<MonthlyFee> findByMonth(MonthEnum month);
     List<MonthlyFee> findByUsers(Users users);
     List<MonthlyFee> findByPaymentStatus(PaymentStatus status);
+    List<MonthlyFee> findByMonthAndPaymentStatus(MonthEnum month, PaymentStatus status);
     Optional<MonthlyFee> findByUsersAndMonth(Users users, MonthEnum month);
 
 

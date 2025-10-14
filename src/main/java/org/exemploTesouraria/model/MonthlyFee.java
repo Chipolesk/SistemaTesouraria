@@ -14,13 +14,14 @@ public class MonthlyFee {
 
     //faz com que o banco salve o enum pelas strings e nao pelos indices
     @Enumerated(EnumType.STRING)
-    @Column(name = "_month")
+    @Column(name = "_month", nullable = false)
     private MonthEnum month;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private PaymentStatus paymentStatus;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "id_user")
     private Users users;
 

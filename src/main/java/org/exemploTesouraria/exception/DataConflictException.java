@@ -19,5 +19,5 @@ public class DataConflictException extends RuntimeException {
     public static DataConflictException  userAlreadyExist(String username){
         return new DataConflictException("Usuário já existente com este nome: " + username);
     }
-    // public static DataConflictException  MonthlyFeeAlreadyExist(Date dateCant){}
+    // public static DataConflictException  MonthlyFeeAlreadyExist(String username){}  necessario pesquisar mais sobre. . .
 }
