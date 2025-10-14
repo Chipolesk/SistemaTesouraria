@@ -1,5 +1,6 @@
 package org.exemploTesouraria.exception;
 
+import org.exemploTesouraria.model.MonthlyFee;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -19,5 +20,7 @@ public class DataConflictException extends RuntimeException {
     public static DataConflictException  userAlreadyExist(String username){
         return new DataConflictException("Usuário já existente com este nome: " + username);
     }
-    // public static DataConflictException  MonthlyFeeAlreadyExist(String username){}  necessario pesquisar mais sobre. . .
+    public static DataConflictException  MonthlyFeeAlreadyExist(MonthlyFee monthlyFee){
+        return new DataConflictException("O usuário: " + monthlyFee.getUsers().getName() + " já possui uma mensalidade registrada no mês: " +monthlyFee.getMonth());
+    }
 }

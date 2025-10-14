@@ -2,6 +2,7 @@ package org.exemploTesouraria.service;
 
 import org.exemploTesouraria.DTO.MonthlyFeeDTO;
 import org.exemploTesouraria.DTO.UserDTO;
+import org.exemploTesouraria.exception.DataConflictException;
 import org.exemploTesouraria.exception.ResourceNotFoundException;
 import org.exemploTesouraria.model.MonthlyFee;
 import org.exemploTesouraria.model.Users;
@@ -33,11 +34,13 @@ public class MonthlyFeeService {
 
         List<MonthlyFee> monthlyFeeExists = monthlyFeeRepository.findByUsers(users);
 
-        boolean isExists = monthlyFeeExists.stream()
-                .anyMatch(mensalidade -> mensalidade.getMonth() == month);
+        MonthlyFee isExists = monthlyFeeExists.stream()
+                .filter(mensalidade -> mensalidade.getMonth() == month)
+                .findFirst()
+                .orElse(null);
 
-        if (isExists){
-        throw new RuntimeException("Este usuario já pagou a mensalidade deste mês");
+        if (isExists != null){
+            throw DataConflictException.MonthlyFeeAlreadyExist(isExists);
         }
         MonthlyFee insertMonthlyFee = new MonthlyFee();
         insertMonthlyFee.setUsers(users);
