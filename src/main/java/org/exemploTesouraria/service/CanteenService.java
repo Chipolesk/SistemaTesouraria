@@ -45,24 +45,24 @@ public class CanteenService {
 
         for(DebtorDTO dto : debtorDTO) {
             Debtors debtors = new Debtors();
-            debtors.setNameDebtors(dto.getName());
+            debtors.setNameDebtors(dto.name());
             debtors.setCanteen(insertCanteen);
-            debtors.setAmount(dto.getAmount());
+            debtors.setAmount(dto.amount());
             insertCanteen.getDebtors().add(debtors);
         }
         Canteen saved = canteenRepository.save(insertCanteen);
-        return new CanteenDTO(saved);
+        return CanteenDTO.fromEntity(saved);
     }
     public List<CanteenDTO> findAllCanteens() {
         return canteenRepository.findAll()
                 .stream()
-                .map(CanteenDTO::new)
+                .map(CanteenDTO::fromEntity)
                 .collect(Collectors.toList());
     }
     public CanteenDTO findByDateCant(LocalDate dateCant) {
         Canteen canteen = canteenRepository.findByDateCant(dateCant)
                 .orElseThrow(() -> ResourceNotFoundException.CanteenNotFound(dateCant));
-        return new CanteenDTO(canteen);
+        return CanteenDTO.fromEntity(canteen);
     }
     public List<CanteenDTO> findByMonth(int month){
         int year = LocalDate.now().getYear(); //pego o ano atual do sistema
@@ -71,7 +71,7 @@ public class CanteenService {
 
         return canteenRepository.findByDateCantBetween(start, end)
                 .stream()
-                .map(CanteenDTO::new)
+                .map(CanteenDTO::fromEntity)
                 .collect(Collectors.toList());
     }
     public List<DebtorWithCanteenDTO> findDebtorsWithCanteenInfo(String nameDebtors){

@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import org.exemploTesouraria.DTO.CanteenDTO;
 
 import org.exemploTesouraria.DTO.CanteenRequestDTO;
-import org.exemploTesouraria.model.Canteen;
 import org.exemploTesouraria.service.CanteenService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -27,13 +26,13 @@ public class CanteenController {
     @PostMapping
     public ResponseEntity<CanteenDTO> createCanteen(@RequestBody @Valid CanteenRequestDTO requestDTO){
         CanteenDTO  createdCanteen = canteenService.createCanteen(
-                requestDTO.getFood(),
-                requestDTO.getDescription(),
-                requestDTO.getValueSold(),
-                requestDTO.getDateCant(),
-                requestDTO.getExpenses(),
-                requestDTO.getAnnotation(),
-                requestDTO.getDebtors());
+                requestDTO.food(),
+                requestDTO.description(),
+                requestDTO.valueSold(),
+                requestDTO.dateCant(),
+                requestDTO.expenses(),
+                requestDTO.annotation(),
+                requestDTO.debtors());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCanteen);
     }
 

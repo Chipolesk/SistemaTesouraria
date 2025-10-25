@@ -2,24 +2,11 @@ package org.exemploTesouraria.DTO;
 
 import org.exemploTesouraria.model.Users;
 
-public class UserDTO {
+public record UserDTO(Integer id, String name) {
 
-    private Integer id;
-    private String name;
 
-    public UserDTO() {}
-
-    public UserDTO(Users user){
-        this.id = user.getId();
-        this.name = user.getName();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
+    public static UserDTO fromEntity(Users user){
+      return new UserDTO(user.getId() ,user.getName());
     }
 
 }

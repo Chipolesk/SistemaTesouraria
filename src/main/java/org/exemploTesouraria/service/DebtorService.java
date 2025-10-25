@@ -32,12 +32,12 @@ public class DebtorService {
         debtors.setCanteen(canteen);
 
         Debtors savedDebtors = debtorRepository.save(debtors);
-        return new DebtorDTO(savedDebtors.getAmount(), savedDebtors.getNameDebtors());
+        return new DebtorDTO(savedDebtors.getNameDebtors(), savedDebtors.getAmount());
     }
     public List<DebtorDTO> getDebtorsByCanteen(Canteen canteen) {
         return debtorRepository.findByCanteen(canteen)
                 .stream()
-                .map(debtors -> new DebtorDTO(debtors.getAmount(), debtors.getNameDebtors()))
+                .map(debtors -> new DebtorDTO(debtors.getNameDebtors(), debtors.getAmount()))
                 .collect(Collectors.toList());
     }
     public void payDebtor(Integer idCanteen, String nameDebtor, Double value) {

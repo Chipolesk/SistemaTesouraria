@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDTO> create(@RequestBody @Valid UserRequestDTO requestDTO){
-    return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(requestDTO.getName()));
+    return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(requestDTO.name()));
     }
 
     @GetMapping
@@ -41,7 +41,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody @Valid UserRequestDTO requestDTO){
-        UserDTO updateUser = userService.updateUser(id, requestDTO.getName());
+        UserDTO updateUser = userService.updateUser(id, requestDTO.name());
         return ResponseEntity.ok(updateUser);
     }
 }

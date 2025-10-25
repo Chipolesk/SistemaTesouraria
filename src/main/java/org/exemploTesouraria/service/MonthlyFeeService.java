@@ -49,7 +49,7 @@ public class MonthlyFeeService {
 
         MonthlyFee monthlyFeeSaved = monthlyFeeRepository.save(insertMonthlyFee);
 
-        return new MonthlyFeeDTO(monthlyFeeSaved);
+        return MonthlyFeeDTO.fromEntity(monthlyFeeSaved);
     }
 
     public MonthlyFeeDTO checkMonthlyFee(String name, MonthEnum month){
@@ -59,7 +59,7 @@ public class MonthlyFeeService {
         MonthlyFee monthlyFee = monthlyFeeRepository.findByUsersAndMonth(users, month)
                 .orElseThrow(() -> ResourceNotFoundException.monthlyFeeNotFound(name, month.toString()));
 
-        return new MonthlyFeeDTO(monthlyFee);
+        return MonthlyFeeDTO.fromEntity(monthlyFee);
     }
 
     public List<UserDTO> findAllUsersWhereStatusIsOpen(int month){
@@ -72,11 +72,9 @@ public class MonthlyFeeService {
             return monthlyFeeRepository.findByMonth(monthEnum)
                     .stream()
                     .filter(mF -> mF.getPaymentStatus() == PaymentStatus.EM_ABERTO) // funciona igual o if
-                    .map(monthlyFee -> new UserDTO(monthlyFee.getUsers()))// funciona como um foreach, para cada pagamento em aberto, irá add na lista de dto o usuario respectivo
+                    .map(monthlyFee ->  UserDTO.fromEntity(monthlyFee.getUsers()))// funciona como um foreach, para cada pagamento em aberto, irá add na lista de dto o usuario respectivo
                     .collect(Collectors.toList()); //transforma em uma lista de UserDTO
 
 
     }
-
-
 }

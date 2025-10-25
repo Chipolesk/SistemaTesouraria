@@ -5,8 +5,6 @@ import org.exemploTesouraria.exception.DataConflictException;
 import org.exemploTesouraria.exception.ResourceNotFoundException;
 import org.exemploTesouraria.model.Users;
 import org.exemploTesouraria.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +14,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -34,13 +32,13 @@ public class UserService {
         newUser.setName(name);
 
             Users saved = userRepository.save(newUser);
-            return new UserDTO(saved);
+            return UserDTO.fromEntity(saved);
     }
 
     public List<UserDTO> showUsers(){
         return userRepository.findAll()
                 .stream() //stream serve para aplicar operações funcionais, como filter, map, collect
-                .map(UserDTO::new) //mapeia toda a lista que veio do findAll e cria um novo UserDTO para cada.
+                .map(UserDTO::fromEntity) //mapeia toda a lista que veio do findAll e cria um novo UserDTO para cada.
                 .collect(Collectors.toList()); //Converte em uma lista de UserDTO
     }
 
@@ -56,6 +54,6 @@ public class UserService {
                .orElseThrow(() -> new  ResourceNotFoundException("Usuario não encontrado com o id: " + id));
        users.setName(newName);
        Users updated = userRepository.save(users);
-        return new UserDTO(updated);
+        return UserDTO.fromEntity(updated);
     }
 }
