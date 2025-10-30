@@ -31,7 +31,7 @@ public class CanteenService {
         double profit = valueSold - expenses;
 
         if(canteenRepository.findByDateCant(dateCant).isPresent()) {
-            throw DataConflictException.CanteenAlreadyExist(dateCant);
+            throw DataConflictException.canteenAlreadyExist(dateCant);
         }
 
         insertCanteen.setDateCant(dateCant);

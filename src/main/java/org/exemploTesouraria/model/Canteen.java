@@ -1,14 +1,20 @@
 package org.exemploTesouraria.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Canteen {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,79 +46,12 @@ public class Canteen {
     private double profit;
 
     @Column(name = "date_canteen", nullable = false, unique = true)
+    @NotNull(message = "A data da cantina é obrigatória")
     //data da canteen
     private LocalDate dateCant;
 
-    @OneToMany(mappedBy = "canteen",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "canteen",cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Debtors> debtors = new ArrayList<>();
 
-
-    public Integer getId() {
-        return id;
-    }
-
-
-    public List<Debtors> getDebtors() {
-        return debtors;
-    }
-
-    public void setDebtors(List<Debtors> debtors) {
-        this.debtors = debtors;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getFood() {
-        return food;
-    }
-
-    public void setFood(String food) {
-        this.food = food;
-    }
-
-    public String getAnnotations() {
-        return annotations;
-    }
-
-    public void setAnnotations(String annotations) {
-        this.annotations = annotations;
-    }
-
-    public double getValueSold() {
-        return valueSold;
-    }
-
-    public void setValueSold(double valueSold) {
-        this.valueSold = valueSold;
-    }
-
-    public double getExpenses() {
-        return expenses;
-    }
-
-    public void setExpenses(double expenses) {
-        this.expenses = expenses;
-    }
-
-    public double getProfit() {
-        return profit;
-    }
-
-    public void setProfit(double profit) {
-        this.profit = profit;
-    }
-
-    public LocalDate getDateCant() {
-        return dateCant;
-    }
-
-    public void setDateCant(LocalDate dateCant) {
-        this.dateCant = dateCant;
-    }
 }

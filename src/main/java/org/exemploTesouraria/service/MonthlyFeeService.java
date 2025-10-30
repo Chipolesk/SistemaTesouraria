@@ -12,7 +12,9 @@ import org.exemploTesouraria.repository.MonthlyFeeRepository;
 import org.exemploTesouraria.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,12 +29,12 @@ public class MonthlyFeeService {
         this.monthlyFeeRepository = monthlyFeeRepository;
         this.userRepository = userRepository;
     }
-
-    public MonthlyFeeDTO recordMonthly(String name, MonthEnum month, PaymentStatus status){
-        Users users = userRepository.findByName(name)
+    @Transactional
+    public MonthlyFeeDTO createMonthly(String name, MonthEnum month){
+        Users user = userRepository.findByName(name)
                 .orElseThrow(() -> ResourceNotFoundException.userNotFound(name));
 
-        List<MonthlyFee> monthlyFeeExists = monthlyFeeRepository.findByUsers(users);
+        List<MonthlyFee> monthlyFeeExists = monthlyFeeRepository.findByUsers(user);
 
         MonthlyFee isExists = monthlyFeeExists.stream()
                 .filter(mensalidade -> mensalidade.getMonth() == month)
@@ -40,29 +42,47 @@ public class MonthlyFeeService {
                 .orElse(null);
 
         if (isExists != null){
-            throw DataConflictException.MonthlyFeeAlreadyExist(isExists);
+            throw DataConflictException.monthlyFeeAlreadyExist(isExists);
         }
         MonthlyFee insertMonthlyFee = new MonthlyFee();
-        insertMonthlyFee.setUsers(users);
+        insertMonthlyFee.setUsers(user);
         insertMonthlyFee.setMonth(month);
-        insertMonthlyFee.setPaymentStatus(status);
+        insertMonthlyFee.setPaymentStatus(PaymentStatus.EM_ABERTO);
 
         MonthlyFee monthlyFeeSaved = monthlyFeeRepository.save(insertMonthlyFee);
 
         return MonthlyFeeDTO.fromEntity(monthlyFeeSaved);
     }
-
-    public MonthlyFeeDTO checkMonthlyFee(String name, MonthEnum month){
-        Users users = userRepository.findByName(name)
+    @Transactional
+    public MonthlyFeeDTO payMonthly(String name, MonthEnum month){
+        Users user = userRepository.findByName(name)
                 .orElseThrow(() -> ResourceNotFoundException.userNotFound(name));
 
-        MonthlyFee monthlyFee = monthlyFeeRepository.findByUsersAndMonth(users, month)
-                .orElseThrow(() -> ResourceNotFoundException.monthlyFeeNotFound(name, month.toString()));
+        MonthlyFee monthlyFee = monthlyFeeRepository.findByUsersAndMonth(user, month)
+                .orElseThrow(() -> ResourceNotFoundException.monthlyFeeNotFound(name, month.name()));
+
+        if(monthlyFee.getPaymentStatus() == PaymentStatus.PAGO){
+            throw  DataConflictException.monthlyFeeAlreadyPaid(monthlyFee);
+        }
+        monthlyFee.setPaymentStatus(PaymentStatus.PAGO);
+        monthlyFee.setPaymentDate(LocalDate.now());
+
+        MonthlyFee updatedMonthlyFee = monthlyFeeRepository.save(monthlyFee);
+
+        return MonthlyFeeDTO.fromEntity(updatedMonthlyFee);
+    }
+
+    public MonthlyFeeDTO checkMonthlyFee(String name, MonthEnum month){
+        Users user = userRepository.findByName(name)
+                .orElseThrow(() -> ResourceNotFoundException.userNotFound(name));
+
+        MonthlyFee monthlyFee = monthlyFeeRepository.findByUsersAndMonth(user, month)
+                .orElseThrow(() -> ResourceNotFoundException.monthlyFeeNotFound(name, month.name()));
 
         return MonthlyFeeDTO.fromEntity(monthlyFee);
     }
 
-    public List<UserDTO> findAllUsersWhereStatusIsOpen(int month){
+    public List<UserDTO> findAllUsersWhereStatusIsOpenByMonth(int month){
            if(month < 1 || month > 12) {
                throw new IllegalArgumentException("Mês inexistente");
            }
