@@ -2,6 +2,7 @@ package org.exemploTesouraria.service;
 
 import org.exemploTesouraria.DTO.MonthlyFeeDTO;
 import org.exemploTesouraria.DTO.UserDTO;
+import org.exemploTesouraria.DTO.UsersDebtorsMonthlyFeeDTO;
 import org.exemploTesouraria.exception.DataConflictException;
 import org.exemploTesouraria.exception.ResourceNotFoundException;
 import org.exemploTesouraria.model.MonthlyFee;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -97,4 +99,23 @@ public class MonthlyFeeService {
 
 
     }
+    //criar um findAllUsersDebtorsByAllMonths, onde irá listar todos os meses que tal usuario esta devendo de mensalidades
+    //essa lista precisará retornar o nome e todos os meses que essa pessoa esta devendo, e o valor também
+    public Map<UserDTO, UsersDebtorsMonthlyFeeDTO> findAllUsersDebtorsByAllMonths(){
+
+       Map<Users, List<MonthEnum>> mapIntermediario = monthlyFeeRepository.findAll()
+                .stream()
+                .filter(m -> m.getPaymentStatus() == PaymentStatus.EM_ABERTO)
+                .collect(Collectors.groupingBy(MonthlyFee::getUsers, Collectors.mapping(MonthlyFee::getMonth, Collectors.toList())));
+
+       return mapIntermediario.entrySet()
+                .stream()
+               .collect(Collectors.toMap(
+                       entry -> UserDTO.fromEntity(entry.getKey()),
+                       entry -> new UsersDebtorsMonthlyFeeDTO(entry.getKey().getName(), entry.getValue())
+               ));
+
+
+    }
 }
+

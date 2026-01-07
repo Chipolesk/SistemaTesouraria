@@ -13,6 +13,7 @@ import java.util.Optional;
 
 public interface MonthlyFeeRepository extends JpaRepository<MonthlyFee, Integer> {
 
+    List<MonthlyFee> findByAllMonths();
     List<MonthlyFee> findByMonth(MonthEnum month);
     List<MonthlyFee> findByUsers(Users users);
     Optional<MonthlyFee> findByUsersAndMonth(Users users, MonthEnum month);
