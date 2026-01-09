@@ -1,4 +1,4 @@
-package org.exemploTesouraria.Controller;
+package org.exemploTesouraria.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

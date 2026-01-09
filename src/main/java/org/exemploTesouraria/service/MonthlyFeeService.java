@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -36,15 +37,10 @@ public class MonthlyFeeService {
         Users user = userRepository.findByName(name)
                 .orElseThrow(() -> ResourceNotFoundException.userNotFound(name));
 
-        List<MonthlyFee> monthlyFeeExists = monthlyFeeRepository.findByUsers(user);
+        Optional<MonthlyFee> isExists = monthlyFeeRepository.findByUsersAndMonth(user, month);
 
-        MonthlyFee isExists = monthlyFeeExists.stream()
-                .filter(mensalidade -> mensalidade.getMonth() == month)
-                .findFirst()
-                .orElse(null);
-
-        if (isExists != null){
-            throw DataConflictException.monthlyFeeAlreadyExist(isExists);
+        if (isExists.isPresent()){
+            throw DataConflictException.monthlyFeeAlreadyExist(isExists.get());
         }
         MonthlyFee insertMonthlyFee = new MonthlyFee();
         insertMonthlyFee.setUsers(user);
@@ -89,19 +85,18 @@ public class MonthlyFeeService {
                throw new IllegalArgumentException("Mês inexistente");
            }
 
-            MonthEnum monthEnum = MonthEnum.values()[month - 1]; // -1 pois o indice do values inicia em 0
+            MonthEnum monthEnum = MonthEnum.values()[month - 1];
 
             return monthlyFeeRepository.findByMonth(monthEnum)
                     .stream()
-                    .filter(mF -> mF.getPaymentStatus() == PaymentStatus.EM_ABERTO) // funciona igual o if
-                    .map(monthlyFee ->  UserDTO.fromEntity(monthlyFee.getUsers()))// funciona como um foreach, para cada pagamento em aberto, irá add na lista de dto o usuario respectivo
-                    .collect(Collectors.toList()); //transforma em uma lista de UserDTO
+                    .filter(mF -> mF.getPaymentStatus() == PaymentStatus.EM_ABERTO)
+                    .map(monthlyFee ->  UserDTO.fromEntity(monthlyFee.getUsers()))
+                    .collect(Collectors.toList());
 
 
     }
-    //criar um findAllUsersDebtorsByAllMonths, onde irá listar todos os meses que tal usuario esta devendo de mensalidades
-    //essa lista precisará retornar o nome e todos os meses que essa pessoa esta devendo, e o valor também
-    public Map<UserDTO, UsersDebtorsMonthlyFeeDTO> findAllUsersDebtorsByAllMonths(){
+
+    public List<UsersDebtorsMonthlyFeeDTO> findAllUsersDebtorsByAllMonths(){
 
        Map<Users, List<MonthEnum>> mapIntermediario = monthlyFeeRepository.findAll()
                 .stream()
@@ -110,10 +105,8 @@ public class MonthlyFeeService {
 
        return mapIntermediario.entrySet()
                 .stream()
-               .collect(Collectors.toMap(
-                       entry -> UserDTO.fromEntity(entry.getKey()),
-                       entry -> new UsersDebtorsMonthlyFeeDTO(entry.getKey().getName(), entry.getValue())
-               ));
+               .map(entry -> new UsersDebtorsMonthlyFeeDTO(entry.getKey().getName(), entry.getValue()))
+               .collect(Collectors.toList());
 
 
     }

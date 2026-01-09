@@ -23,7 +23,7 @@ public class MonthlyFee {
 
     //faz com que o banco salve o enum pelas strings e nao pelos indices
     @Enumerated(EnumType.STRING)
-    @Column(name = "month", nullable = false)
+    @Column(name = "month_fee", nullable = false)
     @NotNull(message = "o mês é obrigatório!")
     private MonthEnum month;
 

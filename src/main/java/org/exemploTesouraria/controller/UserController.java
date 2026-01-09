@@ -1,4 +1,4 @@
-package org.exemploTesouraria.Controller;
+package org.exemploTesouraria.controller;
 
 import jakarta.validation.Valid;
 import org.exemploTesouraria.DTO.UserDTO;
