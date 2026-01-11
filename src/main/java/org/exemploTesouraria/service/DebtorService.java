@@ -22,7 +22,7 @@ public class DebtorService {
         this.canteenRepository = canteenRepository;
     }
 
-    public DebtorDTO registerDebtors(Integer idCanteen, String nameDebtor, Double amounth) {
+    public DebtorDTO createDebtors(Integer idCanteen, String nameDebtor, Double amounth) {
         Canteen canteen = canteenRepository.findById(idCanteen)
                 .orElseThrow(() -> new ResourceNotFoundException("Cantina não encontrada"));
 
