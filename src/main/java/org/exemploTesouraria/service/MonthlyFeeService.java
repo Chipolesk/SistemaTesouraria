@@ -12,13 +12,13 @@ import org.exemploTesouraria.model.enums.PaymentStatus;
 import org.exemploTesouraria.repository.MonthlyFeeRepository;
 import org.exemploTesouraria.repository.UserRepository;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -37,17 +37,20 @@ public class MonthlyFeeService {
         Users user = userRepository.findByName(name)
                 .orElseThrow(() -> ResourceNotFoundException.userNotFound(name));
 
-        Optional<MonthlyFee> isExists = monthlyFeeRepository.findByUsersAndMonth(user, month);
-
-        if (isExists.isPresent()){
-            throw DataConflictException.monthlyFeeAlreadyExist(isExists.get());
+        if (monthlyFeeRepository.existsByUsersAndMonth(user, month)){
+            throw DataConflictException.monthlyFeeAlreadyExist(user.getName(), month);
         }
         MonthlyFee insertMonthlyFee = new MonthlyFee();
         insertMonthlyFee.setUsers(user);
         insertMonthlyFee.setMonth(month);
         insertMonthlyFee.setPaymentStatus(PaymentStatus.EM_ABERTO);
 
-        MonthlyFee monthlyFeeSaved = monthlyFeeRepository.save(insertMonthlyFee);
+        MonthlyFee monthlyFeeSaved;
+        try {
+            monthlyFeeSaved = monthlyFeeRepository.save(insertMonthlyFee);
+        } catch (DataIntegrityViolationException ex) {
+            throw DataConflictException.monthlyFeeAlreadyExist(user.getName(), month);
+        }
 
         return MonthlyFeeDTO.fromEntity(monthlyFeeSaved);
     }
@@ -111,4 +114,3 @@ public class MonthlyFeeService {
 
     }
 }
-

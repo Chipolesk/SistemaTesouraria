@@ -5,8 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDate;
-import java.util.Optional;
-
 @ResponseStatus(HttpStatus.CONFLICT)
 public class DataConflictException extends RuntimeException {
 
@@ -22,7 +20,10 @@ public class DataConflictException extends RuntimeException {
         return new DataConflictException("Usuário já existente com este nome: " + username);
     }
     public static DataConflictException  monthlyFeeAlreadyExist(MonthlyFee monthlyFee){
-        return new DataConflictException("O usuário: " + monthlyFee.getUsers().getName() + " já possui uma mensalidade registrada no mês: " +monthlyFee.getMonth());
+        return monthlyFeeAlreadyExist(monthlyFee.getUsers().getName(), monthlyFee.getMonth());
+    }
+    public static DataConflictException monthlyFeeAlreadyExist(String userName, Object month){
+        return new DataConflictException("O usuário: " + userName + " já possui uma mensalidade registrada no mês: " + month);
     }
     public static DataConflictException monthlyFeeAlreadyPaid(MonthlyFee monthlyFee){
         return new DataConflictException("A mensalidade do mês: " + monthlyFee.getMonth() + " do membro: " + monthlyFee.getUsers().getName() + " já foi paga!");
