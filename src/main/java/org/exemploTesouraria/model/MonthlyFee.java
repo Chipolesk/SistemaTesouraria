@@ -9,7 +9,12 @@ import org.exemploTesouraria.model.enums.PaymentStatus;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "monthlyFee")
+@Table(
+        name = "monthlyFee",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_monthly_fee_user_month", columnNames = {"id_user", "month_fee"})
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
