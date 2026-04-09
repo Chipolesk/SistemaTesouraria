@@ -10,14 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -59,6 +56,12 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, "Bad Request", message, request);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError> handlerIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
+        String message = ex.getMessage() != null ? ex.getMessage() : "Argumento inválido.";
+        return buildResponse(HttpStatus.BAD_REQUEST, "Bad Request", message, request);
+    }
+
     private ResponseEntity<ApiError> buildResponse(HttpStatus status, String error, String message, HttpServletRequest request) {
         ApiError body = new ApiError(
                 LocalDateTime.now(),
@@ -74,49 +77,5 @@ public class GlobalExceptionHandler {
     private String formatFieldError(FieldError fieldError) {
         String defaultMessage = fieldError.getDefaultMessage() != null ? fieldError.getDefaultMessage() : "valor inválido";
         return fieldError.getField() + ": " + defaultMessage;
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handlerIllegalArgumentException(IllegalArgumentException ex){
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp: ", LocalDateTime.now());
-        body.put("status:", HttpStatus.BAD_REQUEST.value());
-        body.put("error:", "Bad Request");
-        body.put("message:", ex.getMessage());
-
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handlerIllegalArgument(IllegalArgumentException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp: ", LocalDateTime.now());
-        body.put("status:", HttpStatus.BAD_REQUEST.value());
-        body.put("error:", "Bad Request");
-        body.put("message:", ex.getMessage());
-
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handlerConstraintViolation(ConstraintViolationException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp: ", LocalDateTime.now());
-        body.put("status:", HttpStatus.BAD_REQUEST.value());
-        body.put("error:", "Validation Error");
-        body.put("message:", ex.getMessage());
-
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Object> handlerMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp: ", LocalDateTime.now());
-        body.put("status:", HttpStatus.BAD_REQUEST.value());
-        body.put("error:", "Validation Error");
-        body.put("message:", "Parâmetro inválido: '" + ex.getName() + "'. Valor recebido: '" + ex.getValue() + "'.");
-
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 }
