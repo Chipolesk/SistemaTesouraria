@@ -45,11 +45,11 @@ public class CanteenService {
 
 
         for(DebtorDTO dto : debtors) {
-            Debtors debtors = new Debtors();
-            debtors.setNameDebtors(dto.name());
-            debtors.setCanteen(insertCanteen);
-            debtors.setAmount(dto.amount());
-            insertCanteen.getDebtors().add(debtors);
+            Debtors debtor = new Debtors();
+            debtor.setNameDebtors(dto.name());
+            debtor.setCanteen(insertCanteen);
+            debtor.setAmount(dto.amount());
+            insertCanteen.getDebtors().add(debtor);
         }
         Canteen saved = canteenRepository.save(insertCanteen);
         return CanteenDTO.fromEntity(saved);
