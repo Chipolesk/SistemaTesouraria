@@ -8,7 +8,7 @@
 **Desenvolvido por [Daniel Chipolesk](https://github.com/chipolesk)**  
 
 API REST para controle financeiro de um departamento interno, inspirada em funcionalidades de um banco digital.  
-O projeto tem como foco o **aprendizado e prática com Java + Spring Boot + SQL Server**, servindo como base para estudos e evolução pessoal.  
+O projeto tem como foco a **resolução do problema de tesouraria de um departamento**, evoluindo do processo manual e lento para digital, 30x mais rápido e moderno.  
 
 ---
 
