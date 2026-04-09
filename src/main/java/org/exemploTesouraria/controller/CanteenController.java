@@ -1,19 +1,24 @@
 package org.exemploTesouraria.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.exemploTesouraria.DTO.CanteenDTO;
 
 import org.exemploTesouraria.DTO.CanteenRequestDTO;
+import org.exemploTesouraria.DTO.DebtorWithCanteenDTO;
 import org.exemploTesouraria.service.CanteenService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("/canteen")
 public class CanteenController {
 
@@ -43,7 +48,7 @@ public class CanteenController {
     }
 
     @GetMapping("/{month}")
-    public ResponseEntity<List<CanteenDTO>> findByMonth(@PathVariable int month){
+    public ResponseEntity<List<CanteenDTO>> findByMonth(@PathVariable @Min(1) @Max(12) int month){
         List<CanteenDTO> canteens = canteenService.findByMonth(month);
         return ResponseEntity.ok(canteens);
     }
@@ -52,5 +57,10 @@ public class CanteenController {
     public ResponseEntity<CanteenDTO> findByDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
         CanteenDTO canteenDTOS = canteenService.findByDateCant(date);
         return ResponseEntity.ok(canteenDTOS);
+    }
+
+    @GetMapping("/debtors/{nameDebtor}")
+    public ResponseEntity<List<DebtorWithCanteenDTO>> findDebtorsWithCanteenInfo(@PathVariable String nameDebtor){
+        return ResponseEntity.ok(canteenService.findDebtorsWithCanteenInfo(nameDebtor));
     }
 }

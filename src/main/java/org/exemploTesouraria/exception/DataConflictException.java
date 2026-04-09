@@ -28,4 +28,7 @@ public class DataConflictException extends RuntimeException {
     public static DataConflictException monthlyFeeAlreadyPaid(MonthlyFee monthlyFee){
         return new DataConflictException("A mensalidade do mês: " + monthlyFee.getMonth() + " do membro: " + monthlyFee.getUsers().getName() + " já foi paga!");
     }
+    public static DataConflictException extraAlreadyExist(LocalDate dateExtra){
+        return new DataConflictException("Extra já existente na data: " + dateExtra);
+    }
 }

@@ -23,4 +23,7 @@ public class ResourceNotFoundException extends RuntimeException{
     public static ResourceNotFoundException CanteenNotFound(LocalDate dateCant){
         return new ResourceNotFoundException("Cantina não encontrada do dia: " + dateCant);
     }
+    public static ResourceNotFoundException extraNotFound(LocalDate dateExtra){
+        return new ResourceNotFoundException("Extra não encontrado do dia: " + dateExtra);
+    }
 }
