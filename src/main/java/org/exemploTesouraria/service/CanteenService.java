@@ -66,8 +66,8 @@ public class CanteenService {
         return CanteenDTO.fromEntity(canteen);
     }
     public List<CanteenDTO> findByMonth(int month){
-        if(month < 1 || month > 12) {
-            throw new IllegalArgumentException("Mês inexistente");
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("Mês inválido. Informe um valor entre 1 e 12.");
         }
 
         int year = LocalDate.now().getYear(); //pego o ano atual do sistema
