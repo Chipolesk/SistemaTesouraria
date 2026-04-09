@@ -52,6 +52,12 @@ public class UserService {
     public UserDTO updateUser(Integer id, String newName){
        Users users = userRepository.findById(id)
                .orElseThrow(() -> new  ResourceNotFoundException("Usuario não encontrado com o id: " + id));
+
+       Optional<Users> userExists = userRepository.findByName(newName);
+       if (userExists.isPresent() && !userExists.get().getId().equals(id)) {
+           throw DataConflictException.userAlreadyExist(newName);
+       }
+
        users.setName(newName);
        Users updated = userRepository.save(users);
         return UserDTO.fromEntity(updated);
