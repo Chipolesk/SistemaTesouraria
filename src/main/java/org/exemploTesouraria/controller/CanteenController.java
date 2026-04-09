@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.exemploTesouraria.DTO.CanteenDTO;
 
 import org.exemploTesouraria.DTO.CanteenRequestDTO;
+import org.exemploTesouraria.DTO.DebtorWithCanteenDTO;
 import org.exemploTesouraria.service.CanteenService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -52,5 +53,10 @@ public class CanteenController {
     public ResponseEntity<CanteenDTO> findByDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
         CanteenDTO canteenDTOS = canteenService.findByDateCant(date);
         return ResponseEntity.ok(canteenDTOS);
+    }
+
+    @GetMapping("/debtors/{nameDebtor}")
+    public ResponseEntity<List<DebtorWithCanteenDTO>> findDebtorsWithCanteenInfo(@PathVariable String nameDebtor){
+        return ResponseEntity.ok(canteenService.findDebtorsWithCanteenInfo(nameDebtor));
     }
 }

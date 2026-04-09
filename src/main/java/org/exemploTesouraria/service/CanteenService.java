@@ -65,6 +65,10 @@ public class CanteenService {
         return CanteenDTO.fromEntity(canteen);
     }
     public List<CanteenDTO> findByMonth(int month){
+        if(month < 1 || month > 12) {
+            throw new IllegalArgumentException("Mês inexistente");
+        }
+
         int year = LocalDate.now().getYear(); //pego o ano atual do sistema
         LocalDate start = LocalDate.of(year ,month,1); //crio a data de inicio do mes
         LocalDate end = start.withDayOfMonth(start.lengthOfMonth()); //determina o ultimo dia do mes, com a funcao lengthOfMonth pegando a quantidade de dias do mes
