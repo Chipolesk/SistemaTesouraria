@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import org.exemploTesouraria.DTO.MonthlyFeeDTO;
 import org.exemploTesouraria.DTO.CreateMonthlyFeeRequestDTO;
 import org.exemploTesouraria.DTO.PayMonthlyFeeRequestDTO;
+import org.exemploTesouraria.DTO.UserDTO;
 import org.exemploTesouraria.DTO.UsersDebtorsMonthlyFeeDTO;
+import org.exemploTesouraria.model.enums.MonthEnum;
 import org.exemploTesouraria.service.MonthlyFeeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +40,15 @@ public class MonthlyFeeController {
                 monthlyFeeService.payMonthly(payMonthlyFeeRequestDTO.username(), payMonthlyFeeRequestDTO.month())
         );
 
+    }
+    @GetMapping("/{username}/{month}")
+    public ResponseEntity<MonthlyFeeDTO> checkMonthlyFee(@PathVariable String username, @PathVariable MonthEnum month){
+        return ResponseEntity.ok(monthlyFeeService.checkMonthlyFee(username, month));
+    }
+
+    @GetMapping("/open/{month}")
+    public ResponseEntity<List<UserDTO>> findAllUsersWhereStatusIsOpenByMonth(@PathVariable int month){
+        return ResponseEntity.ok(monthlyFeeService.findAllUsersWhereStatusIsOpenByMonth(month));
     }
 
 }

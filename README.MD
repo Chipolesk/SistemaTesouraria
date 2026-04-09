@@ -20,12 +20,41 @@ O projeto tem como foco o **aprendizado e prática com Java + Spring Boot + SQL 
 
 ---
 
-## 📌 Funcionalidades
-- 📊 **Saldo em caixa**: exibição do valor atual.  
-- 🍔 **Cantinas**: cadastro e consulta de cantinas (data, alimento, valores de gasto/arrecadação, lucro, observações).  
-- 👥 **Mensalidades**: gerenciamento de membros e mensalidades (status de pagamento por mês, valor pago).  
-- 🧾 **Relatórios**: geração de relatórios mensais e finais.  
-- 💸 **Gastos**: registro de despesas (nome, valor, descrição, data).  
+## 📌 Funcionalidades disponíveis hoje na API
+- 👤 **Usuários**: criar, listar, atualizar e remover membros.
+- 👥 **Mensalidades**: criar mensalidade, pagar mensalidade, consultar mensalidade específica, listar devedores por mês e listar devedores gerais.
+- 🍔 **Cantinas**: criar e consultar cantinas (listagem geral, por mês, por data) e consultar histórico de devedor por nome.
+- 💸 **Extras**: criar e consultar lançamentos extras (listagem geral, por mês e por data).
+
+---
+
+## 📡 Endpoints REST disponíveis
+
+### Usuários (`/users`)
+- `POST /users`
+- `GET /users`
+- `PUT /users/{id}`
+- `DELETE /users/{name}`
+
+### Mensalidades (`/monthly-fees`)
+- `POST /monthly-fees`
+- `PUT /monthly-fees/pay`
+- `GET /monthly-fees/{username}/{month}`
+- `GET /monthly-fees/open/{month}`
+- `GET /monthly-fees/debtors`
+
+### Cantinas (`/canteen`)
+- `POST /canteen`
+- `GET /canteen`
+- `GET /canteen/{month}`
+- `GET /canteen/date/{date}`
+- `GET /canteen/debtors/{nameDebtor}`
+
+### Extras (`/extras`)
+- `POST /extras`
+- `GET /extras`
+- `GET /extras/{month}`
+- `GET /extras/date/{date}`
 
 ---
 

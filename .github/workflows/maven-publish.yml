@@ -1,5 +1,8 @@
-# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+# This workflow builds/tests with Maven and publishes to GitHub Packages when a release is created.
+# It expects pom.xml to contain:
+# - distributionManagement/repository/id = github (matching setup-java server-id)
+# - distributionManagement/repository/url = https://maven.pkg.github.com/${env.GITHUB_REPOSITORY}
+# - coordinates groupId/artifactId = org/exemploTesouraria
 
 name: Maven Package
 
@@ -27,6 +30,13 @@ jobs:
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+
+    - name: Confirm Maven coordinates
+      run: |
+        GROUP_ID=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.groupId)
+        ARTIFACT_ID=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.artifactId)
+        test "$GROUP_ID" = "org"
+        test "$ARTIFACT_ID" = "exemploTesouraria"
 
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml

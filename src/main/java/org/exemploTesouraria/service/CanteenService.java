@@ -29,6 +29,7 @@ public class CanteenService {
     public CanteenDTO createCanteen(String food, String description, double valueSold, LocalDate dateCant, double expenses, String annotations, List<DebtorDTO> debtorDTO) {
         Canteen insertCanteen = new Canteen();
         double profit = valueSold - expenses;
+        List<DebtorDTO> debtors = debtorDTO == null ? Collections.emptyList() : debtorDTO;
 
         if(canteenRepository.findByDateCant(dateCant).isPresent()) {
             throw DataConflictException.canteenAlreadyExist(dateCant);
@@ -43,12 +44,12 @@ public class CanteenService {
         insertCanteen.setProfit(profit);
 
 
-        for(DebtorDTO dto : debtorDTO) {
-            Debtors debtors = new Debtors();
-            debtors.setNameDebtors(dto.name());
-            debtors.setCanteen(insertCanteen);
-            debtors.setAmount(dto.amount());
-            insertCanteen.getDebtors().add(debtors);
+        for(DebtorDTO dto : debtors) {
+            Debtors debtor = new Debtors();
+            debtor.setNameDebtors(dto.name());
+            debtor.setCanteen(insertCanteen);
+            debtor.setAmount(dto.amount());
+            insertCanteen.getDebtors().add(debtor);
         }
         Canteen saved = canteenRepository.save(insertCanteen);
         return CanteenDTO.fromEntity(saved);
