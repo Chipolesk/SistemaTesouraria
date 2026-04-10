@@ -60,6 +60,7 @@ class CanteenServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     void shouldCreateCanteenEvenIfPublisherFails() {
         doThrow(new RuntimeException("falha na publicacao")).when(financialEventPublisher)
                 .onCanteenCreated(anyInt(), any(LocalDate.class), anyDouble(), anyDouble(), anyDouble());
