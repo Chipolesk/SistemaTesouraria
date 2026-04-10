@@ -2,6 +2,7 @@ package org.exemploTesouraria.service;
 
 import org.exemploTesouraria.DTO.MonthlyFeeDTO;
 import org.exemploTesouraria.exception.DataConflictException;
+import org.exemploTesouraria.financial.FinancialEventPublisher;
 import org.exemploTesouraria.model.MonthlyFee;
 import org.exemploTesouraria.model.Users;
 import org.exemploTesouraria.model.enums.MonthEnum;
@@ -12,12 +13,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 
 @SpringBootTest
 class MonthlyFeeServiceIntegrationTest {
@@ -30,6 +36,9 @@ class MonthlyFeeServiceIntegrationTest {
 
     @Autowired
     private MonthlyFeeRepository monthlyFeeRepository;
+
+    @MockBean
+    private FinancialEventPublisher financialEventPublisher;
 
     @BeforeEach
     void setUp() {
@@ -104,6 +113,19 @@ class MonthlyFeeServiceIntegrationTest {
         assertEquals(PaymentStatus.PAGO, paid.paymentStatus());
     }
 
+
+    @Test
+    void shouldPayMonthlyFeeEvenIfPublisherFails() {
+        userRepository.save(Users.builder().name("Joao").build());
+        monthlyFeeService.createMonthly("Joao", MonthEnum.MAIO);
+
+        doThrow(new RuntimeException("falha publisher")).when(financialEventPublisher)
+                .onMonthlyFeePaid(anyInt(), anyString(), any(), any());
+
+        MonthlyFeeDTO paid = assertDoesNotThrow(() -> monthlyFeeService.payMonthly("Joao", MonthEnum.MAIO));
+
+        assertEquals(PaymentStatus.PAGO, paid.paymentStatus());
+    }
     @Test
     void shouldReturnConflictWhenPayingAlreadyPaidMonthlyFee() {
         userRepository.save(Users.builder().name("Joao").build());

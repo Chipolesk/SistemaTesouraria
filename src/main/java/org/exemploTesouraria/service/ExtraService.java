@@ -3,9 +3,13 @@ package org.exemploTesouraria.service;
 import org.exemploTesouraria.DTO.ExtraDTO;
 import org.exemploTesouraria.exception.DataConflictException;
 import org.exemploTesouraria.exception.ResourceNotFoundException;
+import org.exemploTesouraria.financial.FinancialEventPublisher;
 import org.exemploTesouraria.model.Extras;
 import org.exemploTesouraria.repository.ExtraRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,12 +18,17 @@ import java.util.stream.Collectors;
 @Service
 public class ExtraService {
 
-    private final ExtraRepository extraRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExtraService.class);
 
-    public ExtraService(ExtraRepository extraRepository) {
+    private final ExtraRepository extraRepository;
+    private final FinancialEventPublisher financialEventPublisher;
+
+    public ExtraService(ExtraRepository extraRepository, FinancialEventPublisher financialEventPublisher) {
         this.extraRepository = extraRepository;
+        this.financialEventPublisher = financialEventPublisher;
     }
 
+    @Transactional
     public ExtraDTO createExtra(double valueSold, double expenses, String description, LocalDate dateExtra) {
         if (extraRepository.findByDateExtra(dateExtra).isPresent()) {
             throw DataConflictException.extraAlreadyExist(dateExtra);
@@ -31,7 +40,11 @@ public class ExtraService {
         extra.setDescription(description);
         extra.setDateExtra(dateExtra);
 
-        return ExtraDTO.fromEntity(extraRepository.save(extra));
+        Extras savedExtra = extraRepository.save(extra);
+        double profit = calculateProfit(savedExtra.getValueSold(), savedExtra.getExpenses());
+        publishSafely(() -> financialEventPublisher.onExtraCreated(savedExtra.getId(), savedExtra.getDateExtra(), savedExtra.getValueSold(), savedExtra.getExpenses(), profit), "onExtraCreated", savedExtra.getId());
+
+        return ExtraDTO.fromEntity(savedExtra);
     }
 
     public List<ExtraDTO> findAllExtras() {
@@ -61,5 +74,18 @@ public class ExtraService {
                 .stream()
                 .map(ExtraDTO::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    private double calculateProfit(double valueSold, double expenses) {
+        return valueSold - expenses;
+    }
+
+    private void publishSafely(Runnable publisherCall, String action, Integer extraId) {
+        try {
+            publisherCall.run();
+        } catch (Exception ex) {
+            LOGGER.error("Failed to publish financial event '{}' for extraId={}", action, extraId, ex);
+            // TODO: persist failed financial event for retry (outbox pattern)
+        }
     }
 }
