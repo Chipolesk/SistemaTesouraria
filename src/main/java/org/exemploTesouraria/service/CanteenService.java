@@ -62,25 +62,29 @@ public class CanteenService {
         }
 
         Canteen saved = canteenRepository.save(insertCanteen);
+        saved.getDebtors().size();
         double profit = calculateProfit(saved.getValueSold(), saved.getExpenses());
         publishSafely(() -> financialEventPublisher.onCanteenCreated(saved.getId(), saved.getDateCant(), saved.getValueSold(), saved.getExpenses(), profit), "onCanteenCreated", saved.getId());
 
         return toDTO(saved);
     }
 
+    @Transactional(readOnly = true);
     public List<CanteenDTO> findAllCanteens() {
         return canteenRepository.findAll()
                 .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
-
+    
+    @Transactional(readOnly = true);
     public CanteenDTO findByDateCant(LocalDate dateCant) {
         Canteen canteen = canteenRepository.findByDateCant(dateCant)
                 .orElseThrow(() -> ResourceNotFoundException.CanteenNotFound(dateCant));
         return toDTO(canteen);
     }
 
+    @Transactional(readOnly = true);
     public List<CanteenDTO> findByMonth(int month) {
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Mês inválido. Informe um valor entre 1 e 12.");
@@ -109,12 +113,14 @@ public class CanteenService {
     }
 
     private CanteenDTO toDTO(Canteen canteen) {
+        double profit = calculateProfit(canteen.getValueSold(), canteen.getExpenses());
+        
         List<DebtorDTO> debtors = canteen.getDebtors()
                 .stream()
                 .map(debt -> new DebtorDTO(debt.getNameDebtors(), debt.getAmount()))
                 .toList();
 
-        return CanteenDTO.fromEntity(canteen, calculateProfit(canteen.getValueSold(), canteen.getExpenses()), debtors);
+        return CanteenDTO.fromEntity(canteen, profit , debtors);
     }
 
     private double calculateProfit(double valueSold, double expenses) {
