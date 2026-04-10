@@ -69,7 +69,7 @@ public class CanteenService {
         return toDTO(saved);
     }
 
-    @Transactional(readOnly = true);
+    @Transactional(readOnly = true)
     public List<CanteenDTO> findAllCanteens() {
         return canteenRepository.findAll()
                 .stream()
@@ -77,14 +77,14 @@ public class CanteenService {
                 .collect(Collectors.toList());
     }
     
-    @Transactional(readOnly = true);
+    @Transactional(readOnly = true)
     public CanteenDTO findByDateCant(LocalDate dateCant) {
         Canteen canteen = canteenRepository.findByDateCant(dateCant)
                 .orElseThrow(() -> ResourceNotFoundException.CanteenNotFound(dateCant));
         return toDTO(canteen);
     }
 
-    @Transactional(readOnly = true);
+    @Transactional(readOnly = true)
     public List<CanteenDTO> findByMonth(int month) {
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Mês inválido. Informe um valor entre 1 e 12.");
