@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +42,10 @@ public class Canteen {
     //gastos na canteen
     private double expenses;
 
+    @Deprecated(since = "2026-04", forRemoval = false)
     @Column(name = "profit_canteen")
-    //lucro obtido na canteen
-    private double profit;
+    // Campo legado. TODO: remove after ledger implementation.
+    private BigDecimal profit;
 
     @Column(name = "date_canteen", nullable = false, unique = true)
     @NotNull(message = "A data da cantina é obrigatória")
