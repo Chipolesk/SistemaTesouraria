@@ -62,4 +62,5 @@ O projeto tem como foco a **resolução do problema de tesouraria de um departam
 - Autenticação de administrador (gestão interna).  
 - Relatórios visuais com gráficos em frontend.  
 - Integração com um frontend simples.  
-- Deploy em nuvem.  
+- Deploy em nuvem. 
+- Machine Learning
